@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-md-10">
+        <h3>Timesheet van {{ weeklist[0].strftime('%d.%m.%Y') }} tot {{ weeklist[6].strftime('%d.%m.%Y') }}</h3>
+        <table id="mainTable" class="table table-hover table-bordered table-condensed">
+        <thead>
+            <tr>
+                <th>Project</th>
+                {% for dt in weeklist %}
+                    <th>
+                        {{ dt.strftime('%a %d/%m') }}
+                    </th>
+                {% endfor %}
+                <th>WBS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projectlist %}
+            <tr>
+                <th>
+                    <a href="{{ url_for('main.report_project_month', project_id=project.project_id) }}">
+                        {{ project.name }}
+                    </a>
+                </th>
+                {% for dt in weeklist %}
+                    {% set keystr = dt.strftime('%Y.%m.%d') + "." + project.project_id|string %}
+                    {% set dbid = dt.strftime('%Y-%m-%d') + "." + project.project_id|string %}
+                    {% if project_time[keystr] %}
+                        <td dbid="{{ dbid }}">{{ project_time[keystr] }}</td>
+                    {% else %}
+                        <td dbid="{{ dbid }}">0</td>
+                    {% endif %}
+                {% endfor %}
+                <th>{{ project.wbs }}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

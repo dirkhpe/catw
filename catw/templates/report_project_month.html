@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-md-4">
+        <h3>
+            <a href="{{ url_for('main.project_edit', project_id=project.project_id) }}">
+                {{ project.name }}
+            </a>
+        </h3>
+        <div class="btn-group">
+            <a href="{{ url_for('main.report_project_day', project_id=project.project_id) }}" class="btn btn-default">
+                Per Day
+            </a>
+        </div>
+        <br>
+        Total hours: <strong>{{ '{:,.0f}'.format(project_total) }}</strong>
+        (<strong>{{ '{:,.2f}'.format(project_total/hpd) }}</strong> days)
+        <br>
+        <h4>Overview per Month</h4>
+        <table class="table table-hover table-bordered">
+            <tr>
+                <th>Year</th>
+                <th>Month</th>
+                <th class="text-right">Hours</th>
+                <th class="text-right">Days</th>
+            </tr>
+            {% for row in project_month %}
+                <tr>
+                    <td>{{ row.year }}</td>
+                    <td>{{ month_name[row.month|int] }}</td>
+                    <td class="text-right">{{ '{:,.0f}'.format(row.total_time) }}</td>
+                    <td class="text-right">{{ '{:,.2f}'.format(row.total_time/hpd) }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

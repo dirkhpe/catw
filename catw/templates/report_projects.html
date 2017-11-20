@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-md-6">
+        <h3>{{ report_header }}</h3>
+        <br>
+        Total hours: <strong>{{ '{:,.0f}'.format(total_time) }}</strong>
+        Total days: <strong>{{ '{:,.0f}'.format(total_time/hpd) }}</strong>
+        <br>
+        <table class="table table-hover table-bordered">
+            <tr>
+                <th>Project</th>
+                <th class="text-right">Project Time</th>
+                <th class="text-right">Percentage</th>
+                <th class="text-right">Days</th>
+            </tr>
+            {% for project, project_time in project_report %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('main.report_project_month', project_id=project.project_id) }}">
+                            {{ project.name }}
+                        </a>
+                    </td>
+                    <td class="text-right">{{ '{:,.0f}'.format(project_time) }}</td>
+                    <td class="text-right">
+                        {{ '{:,.2f} %'.format((project_time*100)/total_time) }}
+                    </td>
+                    <td class="text-right">{{ '{:,.2f}'.format(project_time / hpd) }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

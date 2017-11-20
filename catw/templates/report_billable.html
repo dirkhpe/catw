@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-md-6">
+        <h3>{{ report_header }}</h3>
+        <br>
+        Billable time since {{ oldest_booking.strftime('%d-%m-%Y') }} is <strong>{{ '{:,.0f}'.format(total_billable) }}
+        hours</strong> of <strong>{{ '{:,.0f}'.format(total_time) }}</strong> hours in total.
+        <br>This is <strong>{{ '{:,.2f}'.format(total_billable / hpd) }}</strong> days of
+        <strong>{{ '{:,.0f}'.format(total_time/hpd) }}</strong>, or
+        <strong>{{ '{:,.2f}'.format((total_billable * 100) / total_time) }} %</strong> of the time.
+        <br>
+        However this includes <strong>{{ '{:,.0f}'.format(total_holidays/hpd) }}</strong> holidays.
+        {% set real_time = total_time - total_holidays %}
+        So real billable is <strong>{{ '{:,.2f}'.format((total_billable * 100) / real_time) }} %</strong> of the time
+        ({{ '{:,.0f}'.format(real_time/hpd) }} days)
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Per Year</h4>
+        <table class="table table-hover table-bordered">
+            <tr>
+                <th>Year</th>
+                <th class="text-right">Days</th>
+                <th class="text-right">Billable Time</th>
+                <th class="text-right">Total Time</th>
+                <th class="text-right">Percentage</th>
+                <th class="text-right">Netto Total Time</th>
+                <th class="text-right">Netto Pct</th>
+            </tr>
+            {% for row in billable_per_year %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('main.report_year', year=row.year) }}">
+                            {{ row.year }}
+                        </a>
+                    </td>
+                    <td class="text-right">
+                        {% set days = row.billable_time / hpd %}
+                        {{ '{:,.2f}'.format(days) }}
+                    </td>
+                    <td class="text-right">{{ '{:,.0f}'.format(row.billable_time) }}</td>
+                    <td class="text-right">{{ '{:,.0f}'.format(time_per_year[row.year]) }}</td>
+                    <td class="text-right">
+                        {% set pct = (row.billable_time *100) / time_per_year[row.year] %}
+                        {{ '{:,.2f}'.format(pct) }} %
+                    </td>
+                    <td class="text-right">{{ '{:,.0f}'.format(time_per_year_eh[row.year]) }}</td>
+                    <td class="text-right">
+                        {% set pct = (row.billable_time *100) / time_per_year_eh[row.year] %}
+                        {{ '{:,.2f}'.format(pct) }} %
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

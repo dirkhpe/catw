@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-md-5">
+        <h3>Select Project</h3>
+        <table class="table table-hover">
+            <tr>
+                <th>Project</th>
+                <th>Status</th>
+                <th>Billable</th>
+                <th></th>
+            </tr>
+            {% for project in project_list %}
+                <tr>
+                    <td><a href="{{  url_for('main.report_project_month', project_id=project.project_id) }}">
+                        {{ project.name }}
+                    </a></td>
+                    <td>{{ project.status }}</td>
+                    <td>{{ project.billable }}</td>
+                    <td>
+                        <a href="{{ url_for('main.project_edit', project_id=project.project_id) }}">
+                            maintain
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
